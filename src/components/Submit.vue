@@ -35,9 +35,9 @@
       <p>Submittion URL: <span>{{ full_predict_url }}</span></p>
       <p>Submittion status: <span v-bind:style="{color: submitted_status_color}">{{ submitted_status }}</span></p>
     </div>
-    <div class="submission-section">
+    <div v-if="show_health_check_button" class="submission-section">
       <p>4. Check the health endpoint of your service</p>
-      <button v-if="show_health_check_button" class="usecase-btn" @click="verify_health_url" v-bind:style="{backgroundColor: verified_status_color}" >Health Check</button>
+      <button class="usecase-btn" @click="verify_health_url" v-bind:style="{backgroundColor: verified_status_color}" >Health Check</button>
     </div>
     <div v-if="show_submit_button" class="submission-section">
       <p>5. Submit</p>

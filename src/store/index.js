@@ -19,7 +19,8 @@ export default createStore({
         max_attempts_waldo: '2',
         max_attempts_race_car: '-',
         max_attempts_reviews: '3',
-        max_attempts_iq_test: '1'
+        max_attempts_iq_test: '1',
+        evaluation_server_base_url: 'https://dm-ai-evaluation.westeurope.cloudapp.azure.com'
     },
     mutations: {
         reset_validation_state(state) {
@@ -102,10 +103,9 @@ export default createStore({
         },
         async verify_health_url({ getters, commit, state }) {
             try {
-                const url = getters.health_url
-                console.log(url)
                 this.commit('add_response', 'Performing health check...')
                 state.verifying = true
+                const url = `${state.evaluation_server_base_url}/group/health?host_url=${getters.health_url}`
                 const response = await fetch(url, { method: 'GET' })  
                 state.verifying = false
                 if(response.status === 200) {
@@ -124,7 +124,7 @@ export default createStore({
         },
         async verify_group({ commit, state }) {
             try {
-                const url = `http://20.86.76.212:4242/group/validate?group_id=${state.group}`
+                const url = `${state.evaluation_server_base_url}/group/validate?group_id=${state.group}`
                 this.commit('add_response', 'Verifying group UUID...')
                 state.group_verifying = true
                 const response = await fetch(url, { method: 'GET' })
@@ -184,14 +184,28 @@ export default createStore({
         }
     },
     getters: {
-        health_url: state => {
-            return `${state.protocol}://${state.host}:${state.port}/api`
+        health_url: (state, getters) => {
+            return `${getters.raw_url}/api`
         },
         predict_url: state => {
             return `${state.protocol}://${state.host}:${state.port}/api/predict`
         },
         raw_url: state => {
             return `${state.protocol}://${state.host}:${state.port}`
+        },
+        attempts_url: state => {
+            if (state.usecase === 0) return `${state.evaluation_server_base_url}/wheres-waldo?group_id=${state.group}`
+            if (state.usecase === 1) return `${state.evaluation_server_base_url}/racing-game?group_id=${state.group}`
+            if (state.usecase === 2) return `${state.evaluation_server_base_url}/movie-reviews?group_id=${state.group}`
+            if (state.usecase === 3) return `${state.evaluation_server_base_url}/iq-test?group_id=${state.group}`
+            return undefined
+        },
+        submission_url: state => {
+            if (state.usecase === 0) return `${state.evaluation_server_base_url}/wheres-waldo`
+            if (state.usecase === 1) return `${state.evaluation_server_base_url}/racing-game`
+            if (state.usecase === 2) return `${state.evaluation_server_base_url}/movie-reviews`
+            if (state.usecase === 3) return `${state.evaluation_server_base_url}/iq-test`
+            return undefined
         },
         usecase_name: state => {
             if (state.usecase === 0) return 'Where\'s Waldo'
@@ -211,22 +225,6 @@ export default createStore({
             if (state.usecase === 1) return state.max_attempts_race_car
             if (state.usecase === 2) return state.max_attempts_reviews
             if (state.usecase === 3) return state.max_attempts_iq_test
-            return undefined
-        },
-        attempts_url: state => {
-            const base = 'http://20.86.76.212:4242'
-            if (state.usecase === 0) return `${base}/wheres-waldo?group_id=${state.group}`
-            if (state.usecase === 1) return `${base}/racing-game?group_id=${state.group}`
-            if (state.usecase === 2) return `${base}/movie-reviews?group_id=${state.group}`
-            if (state.usecase === 3) return `${base}/iq-test?group_id=${state.group}`
-            return undefined
-        },
-        submission_url: state => {
-            const base = 'http://20.86.76.212:4242'
-            if (state.usecase === 0) return `${base}/wheres-waldo`
-            if (state.usecase === 1) return `${base}/racing-game`
-            if (state.usecase === 2) return `${base}/movie-reviews`
-            if (state.usecase === 3) return `${base}/iq-test`
             return undefined
         },
         is_protocol_valid: state => {
