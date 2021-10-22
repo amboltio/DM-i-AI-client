@@ -32,8 +32,9 @@
       <p>Attempts: <span v-bind:style="{color: attempts_status_color}">{{ attempts_value }}</span></p>
       <p>Health check URL: <span>{{ full_health_url }} </span></p>
       <p>Health status: <span v-bind:style="{ color: verified_status_color}">{{ verified_status }}</span></p>
-      <p>Submittion URL: <span>{{ full_predict_url }}</span></p>
-      <p>Submittion status: <span v-bind:style="{color: submitted_status_color}">{{ submitted_status }}</span></p>
+      <p>Submission URL: <span>{{ full_predict_url }}</span></p>
+      <p>Submission status: <span v-bind:style="{color: submitted_status_color}">{{ submitted_status }}</span></p>
+      <p>Score: <span v-bind:style="{color: submitted_status_color}">{{ score_value }}</span></p>
     </div>
     <div v-if="show_health_check_button" class="submission-section">
       <p>4. Check the health endpoint of your service</p>
@@ -76,6 +77,11 @@ export default {
         const has_free_attempts = this.$store.getters.are_attempts_valid
         const health_verified = this.$store.state.verified
         return has_free_attempts && health_verified && this.has_usecase_name
+      }
+    },
+    score_value: {
+      get: function () {
+        return this.$store.state.score
       }
     },
     protocol_value: {

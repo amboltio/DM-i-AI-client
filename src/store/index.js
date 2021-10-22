@@ -20,7 +20,8 @@ export default createStore({
         max_attempts_race_car: '-',
         max_attempts_reviews: '3',
         max_attempts_iq_test: '1',
-        evaluation_server_base_url: 'https://dm-ai-evaluation.westeurope.cloudapp.azure.com'
+        evaluation_server_base_url: 'https://dm-ai-evaluation.westeurope.cloudapp.azure.com',
+        score: '-'
     },
     mutations: {
         reset_validation_state(state) {
@@ -74,25 +75,30 @@ export default createStore({
                     "host_url": getters.raw_url,
                     "group_id": state.group
                 }
-                const response = await fetch(getters.submission_url, {
+
+                state.score = 'processing...'
+                fetch(getters.submission_url, {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(payload)
-                })
-
-                if (response.status == 200) {
+                }).then(response => {
+                    if (response.status == 200) return response.json()
+                    else throw 'Cannot submit'
+                }).then(data => {
+                    state.score = data["data"]["score"]
                     state.submitting = false
                     state.submitted = true
-                    commit('add_response', 'Submission successful.')
-                }
-                else {
+                    commit('add_response', `Submission successful. Score: ${state.score}`)
+                }).catch(error => {
+                    console.log(error)
                     state.submitting = false
                     state.submitted = false
                     commit('add_response', 'Submission failed.')
-                }
+                })
+
                 dispatch('get_attempts')
             }
             catch (error) {
