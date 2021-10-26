@@ -77,7 +77,6 @@ export default createStore({
                 }
 
                 state.score = 'processing...'
-                console.log(getters.submission_url)
                 fetch(getters.submission_url, {
                     method: 'POST',
                     headers: {
@@ -87,7 +86,7 @@ export default createStore({
                     body: JSON.stringify(payload)
                 }).then(response => {
                     if (response.status == 200) return response.json()
-                    else throw 'Cannot submit'
+                    else throw `Cannot communicate with host url ${getters.raw_url}.`
                 }).then(data => {
                     state.score = data["data"]["score"]
                     state.submitting = false
@@ -99,6 +98,7 @@ export default createStore({
                     state.submitted = false
                     state.score = '-'
                     commit('add_response', 'Submission failed.')
+                    commit('add_response', error)
                 })
 
                 dispatch('get_attempts')
