@@ -1,14 +1,17 @@
 <template>
+  <ScoreBoard/>
   <Submit/>
 </template>
 
 <script>
 import Submit from './components/Submit.vue'
+import ScoreBoard from './components/ScoreBoard.vue'
 
 export default {
   name: 'App',
   components: {
-    Submit
+    Submit,
+    ScoreBoard
   }
 }
 </script>
