@@ -9,8 +9,8 @@
     <div class="submission-section">
       <button class="usecase-btn" @click="set_usecase(0)" v-bind:style="{backgroundColor: get_usecase_color(0)}">Where's Waldo</button>
       <button class="usecase-btn" @click="set_usecase(1)" v-bind:style="{backgroundColor: get_usecase_color(1)}">Racing game</button>
-      <button class="usecase-btn" @click="set_usecase(2)" v-bind:style="{backgroundColor: get_usecase_color(2)}">IQ Test</button>
-      <button class="usecase-btn" @click="set_usecase(3)" v-bind:style="{backgroundColor: get_usecase_color(3)}">Movie reviews</button>
+      <button class="usecase-btn" @click="set_usecase(2)" v-bind:style="{backgroundColor: get_usecase_color(2)}">Movie reviews</button>
+      <button class="usecase-btn" @click="set_usecase(3)" v-bind:style="{backgroundColor: get_usecase_color(3)}">IQ Test</button>
     </div>
     <div class="submission-section">
       <p>2. What is your group UUID?</p>

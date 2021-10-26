@@ -77,6 +77,7 @@ export default createStore({
                 }
 
                 state.score = 'processing...'
+                console.log(getters.submission_url)
                 fetch(getters.submission_url, {
                     method: 'POST',
                     headers: {
@@ -96,6 +97,7 @@ export default createStore({
                     console.log(error)
                     state.submitting = false
                     state.submitted = false
+                    state.score = '-'
                     commit('add_response', 'Submission failed.')
                 })
 
@@ -216,8 +218,8 @@ export default createStore({
         usecase_name: state => {
             if (state.usecase === 0) return 'Where\'s Waldo'
             if (state.usecase === 1) return 'Racing game'
-            if (state.usecase === 2) return 'IQ Test'
-            if (state.usecase === 3) return 'Movie reviews'
+            if (state.usecase === 2) return 'Movie reviews'
+            if (state.usecase === 3) return 'IQ Test'
             else return '[Not selected]'
         },
         attempts_text: (state, getters) => {
