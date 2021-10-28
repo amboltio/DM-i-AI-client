@@ -1,18 +1,18 @@
 <template>
-  <h1>Leaderboard</h1>
-
-  <table id="leaderboard" class="display" style="width: 50%">
-    <thead>
-      <tr>
-        <th>Team Name</th>
-        <th>Where's Waldo?</th>
-        <th>Movie Reviews</th>
-        <th>Racing Game</th>
-        <th>IQ Test</th>
-        <th>Total Score</th>
-      </tr>
-    </thead>
-  </table>
+  <div class="submission-form">
+    <table id="leaderboard" class="display" style="width: 50%">
+      <thead>
+        <tr>
+          <th>Team Name</th>
+          <th>Where's Waldo?</th>
+          <th>Movie Reviews</th>
+          <th>Racing Game</th>
+          <th>IQ Test</th>
+          <th>Total Score</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
 </template>
 
 <script>
@@ -25,7 +25,7 @@ import $ from "jquery";
 export default {
   mounted() {
     $("#leaderboard").DataTable({
-      ajax: "http://localhost:4242/score/all",
+      ajax: "https://dm-ai-evaluation.westeurope.cloudapp.azure.com/score/all",
       paging: false,
       searching: false,
       info: false,
@@ -55,4 +55,24 @@ export default {
 
 <style scoped>
 @import "https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css";
+
+.submission-form {
+  height: 1000px;
+  width: 70%;
+  background-color: rgb(65, 57, 57);
+  box-shadow: 15px 15px 10px #888;
+  margin: auto;
+  border-radius: 1%;
+}
+
+table {
+  width: 90% !important;
+  margin-top: 20px;
+  padding-top: 20px;
+}
+
+th {
+  color: white;
+  font-size: 20px;
+}
 </style>

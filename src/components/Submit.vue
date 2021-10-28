@@ -34,15 +34,16 @@
       <p>Health status: <span v-bind:style="{ color: verified_status_color}">{{ verified_status }}</span></p>
       <p>Submission URL: <span>{{ full_predict_url }}</span></p>
       <p>Submission status: <span v-bind:style="{color: submitted_status_color}">{{ submitted_status }}</span></p>
-      <p>Score: <span v-bind:style="{color: submitted_status_color}">{{ score_value }}</span></p>
+      <p>Score: <span v-bind:style="{color: grey}">{{ score_value }}</span></p>
     </div>
     <div v-if="show_health_check_button" class="submission-section">
-      <p>4. Check the health endpoint of your service</p>
-      <button class="usecase-btn" @click="verify_health_url" v-bind:style="{backgroundColor: verified_status_color}" >Health Check</button>
+      <p>4. Check the health endpoint of your service or try to submit against our validation dataset</p>
+      <button class="action-btn" @click="verify_health_url" v-bind:style="{backgroundColor: verified_status_color}" >Health Check</button>
+      <button class="action-btn" @click="validate" v-bind:style="{backgroundColor: validation_status_color}" >Test submittion</button>
     </div>
     <div v-if="show_submit_button" class="submission-section">
       <p>5. Submit</p>
-      <button @click="submit_evaluation" class="usecase-btn">Submit</button>
+      <button @click="submit_evaluation" class="action-btn">Submit</button>
     </div>
     <div class="submission-section submission-info">
       <textarea class="response-text-area" v-model="response_messages" rows="10" cols="50"></textarea>
@@ -57,7 +58,8 @@ export default {
       green: '#22a865',
       red: '#f72a1b',
       yellow: '#b5ab38',
-      grey: 'grey'
+      grey: 'grey',
+      white: 'white'
     }
   },
   computed: {
@@ -192,6 +194,12 @@ export default {
         return this.$store.state.submitted ? this.green : this.red
       }
     },
+    validation_status_color: {
+      get: function () {
+        if (this.$store.validating) return this.yellow
+        return this.white
+      }
+    }, 
     protocol_color: {
       get: function () {
         if (this.$store.getters.is_protocol_valid) return this.green
@@ -241,6 +249,9 @@ export default {
     },
     submit_evaluation() {
       this.$store.dispatch('submit_evaluation')
+    },
+    validate() {
+      this.$store.dispatch('submit_validation')
     }
   }
 }
@@ -257,8 +268,8 @@ export default {
   #input-uuid{ width: 75% }
 
   .submission-form{
-    height: 1000px;
-    width: 700px;
+    height: 1150px;
+    width: 900px;
     background-color: rgb(65, 57, 57);
     box-shadow: 15px 15px 10px #888;
     margin: auto;
@@ -281,6 +292,16 @@ export default {
     border-radius: 15px;
     border: none;
     background-color: white;
+  }
+  .action-btn{
+    height:30px;
+    width: auto;
+    margin: 0 10px;
+    border-radius: 15px;
+    border: none;
+    background-color: white;
+    padding-left: 15px;
+    padding-right: 15px;
   }
   .check-btn{
     border-radius: 15px;
@@ -315,6 +336,15 @@ export default {
     margin-left: 10px; 
     margin-right: 10px;
     border: 3px solid white;
+  }
+  #input-protocol{
+    width: 100px !important;
+  }
+  #input-host{
+    width: 200px !important;
+  }
+  #input-port{
+    width: 100px !important;
   }
   .submission-input:focus{
     outline: none;

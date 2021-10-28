@@ -1,20 +1,10 @@
 <template>
-  <ScoreBoard />
-  <Submit />
+  <div id="nav">
+    <router-link to="/leaderboard">Leaderboard</router-link> |
+    <router-link to="/submit">Evaluate your service</router-link>
+  </div>
+  <router-view/>
 </template>
-
-<script>
-import Submit from "./components/Submit.vue";
-import ScoreBoard from "./components/ScoreBoard.vue";
-
-export default {
-  name: "App",
-  components: {
-    Submit,
-    ScoreBoard,
-  },
-};
-</script>
 
 <style>
 #app {
@@ -23,7 +13,20 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
-  margin-bottom: 60px;
+}
+
+#nav {
+  padding: 30px;
+  font-size: 20px;
+  text-align: left;
+}
+
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+  color: #b12f35;
 }
 </style>

@@ -8,6 +8,7 @@ export default createStore({
         usecase: undefined,
         verified: false,
         verifying: false,
+        validating: false,
         submitted: false,
         submitting: false,
         group: "",
@@ -31,32 +32,32 @@ export default createStore({
         set_verified_satus(state, value) {
             state.verified = value
         },
-        set_protocol (state, value) {
+        set_protocol(state, value) {
             this.commit('reset_validation_state')
             state.protocol = value;
         },
-        set_host (state, value) {
+        set_host(state, value) {
             this.commit('reset_validation_state')
             state.host = value;
         },
-        set_port (state, value) {
+        set_port(state, value) {
             this.commit('reset_validation_state')
             state.port = value;
         },
-        set_usecase (state, value) {
+        set_usecase(state, value) {
             this.commit('reset_validation_state')
-            if (value in [0,1,2,3] === false) {
+            if (value in [0, 1, 2, 3] === false) {
                 state.usecase = undefined
                 return
             }
             state.usecase = value
         },
-        set_group (state, value) {
+        set_group(state, value) {
             this.commit('reset_validation_state')
             state.group_verified = false
             state.group = value
         },
-        add_response (state, value) {
+        add_response(state, value) {
             const date = new Date()
             const date_str = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
             const message = `[${date_str}] ${value}`
@@ -64,10 +65,51 @@ export default createStore({
         }
     },
     actions: {
+        async submit_validation({ state, commit, getters }) {
+            try {
+                if (state.validating || state.submitting) {
+                    commit('add_response', 'Validation or submittion in process, please wait...')
+                    return
+                }
+                state.validating = true
+                const payload = {
+                    "host_url": getters.raw_url,
+                    "group_id": state.group
+                }
+
+                state.score = 'processing...'
+                fetch(getters.validation_url, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                }).then(response => {
+                    if (response.status == 200) return response.json()
+                    else throw `Cannot communicate with host url ${getters.raw_url}.`
+                }).then(data => {
+                    state.score = data["data"]["score"]
+                    state.validating = false
+                    commit('add_response', `Validation successful. Score: ${state.score}`)
+                }).catch(error => {
+                    console.log(error)
+                    state.validating = false
+                    state.score = '-'
+                    commit('add_response', 'Validation failed.')
+                    commit('add_response', error)
+                })
+            }
+            catch (error) {
+                commit('reset_validation_state')
+                commit('add_response', 'Valudation submittion failed.')
+                state.validating = false
+            }
+        },
         async submit_evaluation({ state, commit, getters, dispatch }) {
-            try{
-                if (state.submitting) {
-                    commit('add_response', 'Submission in process, please wait...')
+            try {
+                if (state.validating || state.submitting) {
+                    commit('add_response', 'Validation or submittion in process, please wait...')
                     return
                 }
                 state.submitting = true
@@ -92,6 +134,7 @@ export default createStore({
                     state.submitting = false
                     state.submitted = true
                     commit('add_response', `Submission successful. Score: ${state.score}`)
+                    dispatch('get_attempts')
                 }).catch(error => {
                     console.log(error)
                     state.submitting = false
@@ -99,9 +142,8 @@ export default createStore({
                     state.score = '-'
                     commit('add_response', 'Submission failed.')
                     commit('add_response', error)
+                    dispatch('get_attempts')
                 })
-
-                dispatch('get_attempts')
             }
             catch (error) {
                 commit('reset_validation_state')
@@ -114,9 +156,9 @@ export default createStore({
                 this.commit('add_response', 'Performing health check...')
                 state.verifying = true
                 const url = `${state.evaluation_server_base_url}/group/health?host_url=${getters.health_url}`
-                const response = await fetch(url, { method: 'GET' })  
+                const response = await fetch(url, { method: 'GET' })
                 state.verifying = false
-                if(response.status === 200) {
+                if (response.status === 200) {
                     this.commit('set_verified_satus', true)
                     this.commit('add_response', 'Health check successfull.')
                 }
@@ -137,7 +179,7 @@ export default createStore({
                 state.group_verifying = true
                 const response = await fetch(url, { method: 'GET' })
                 state.group_verifying = false
-                if(response.status === 200) {
+                if (response.status === 200) {
                     state.group_verified = true
                     this.commit('add_response', 'Group verification successfull.')
                 }
@@ -154,17 +196,17 @@ export default createStore({
             try {
                 this.commit('add_response', 'Fetching number of attempts for selected usecase...')
                 const url = getters.attempts_url
-                
+
                 if (!url) {
                     this.commit('add_response', 'Failed to fetch attempts, because usecase needs to be selected.')
                     return
                 }
-                if (state.group.length === 0){
+                if (state.group.length === 0) {
                     this.commit('add_response', 'Failed to fetch attempts, because group has to be entered.')
                     return
                 }
 
-                
+
                 state.attempts_verifying = true
                 fetch(url)
                     .then(response => {
@@ -174,7 +216,13 @@ export default createStore({
                     .then(data => {
                         const attempts = data["data"]["attempts"]
                         state.attempts_verifying = false
-                        state.attempts = attempts.length
+
+                        let no_attempts = 0
+                        attempts.forEach(element => {
+                            if (element['is_validation']) return
+                            no_attempts += 1
+                        });
+                        state.attempts = no_attempts
                         this.commit('add_response', 'Attempts fetched successfully..')
                     })
                     .catch(error => {
@@ -215,6 +263,13 @@ export default createStore({
             if (state.usecase === 3) return `${state.evaluation_server_base_url}/iq-test`
             return undefined
         },
+        validation_url: state => {
+            if (state.usecase === 0) return `${state.evaluation_server_base_url}/wheres-waldo/validate`
+            if (state.usecase === 1) return `${state.evaluation_server_base_url}/racing-game/validate`
+            if (state.usecase === 2) return `${state.evaluation_server_base_url}/movie-reviews/validate`
+            if (state.usecase === 3) return `${state.evaluation_server_base_url}/iq-test/validate`
+            return undefined
+        },
         usecase_name: state => {
             if (state.usecase === 0) return 'Where\'s Waldo'
             if (state.usecase === 1) return 'Racing game'
@@ -236,7 +291,7 @@ export default createStore({
             return undefined
         },
         is_protocol_valid: state => {
-            return state.protocol === 'http' ||  state.protocol === 'https'
+            return state.protocol === 'http' || state.protocol === 'https'
         },
         is_host_valid: state => {
             const regex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
@@ -250,7 +305,7 @@ export default createStore({
             return regex.test(state.group)
         },
         are_attempts_valid: (state, getters) => {
-            if (state.attempts < 0 || state.usecase in [0,1,2,3] === false) return false
+            if (state.attempts < 0 || state.usecase in [0, 1, 2, 3] === false) return false
             const cap = getters.attempts_cap
             if (cap === undefined || state.attempts >= cap) return false
             return true
