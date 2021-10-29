@@ -29,9 +29,6 @@ import $ from "jquery";
 export default {
   mounted() {
     $("#leaderboard").DataTable({
-      paging: false,
-      searching: false,
-      info: false,
       paging: true,
       searching: true,
       info: true,
