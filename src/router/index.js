@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import ScoreBoard from '../components/ScoreBoard.vue'
+import FinalScoreBoard from '../components/FinalScoreBoard.vue'
 import Submit from '../components/Submit.vue'
 
 const routes = [
@@ -12,6 +13,11 @@ const routes = [
     path: '/leaderboard',
     name: 'leaderboard',
     component: ScoreBoard
+  },
+  {
+    path: '/finalleaderboard',
+    name: 'finalleaderboard',
+    component: FinalScoreBoard
   },
   {
     path: '/submit',

@@ -1,6 +1,6 @@
 <template>
   <div class="submission-form">
-    <table id="leaderboard" class="display" style="width: 50%">
+    <table id="finalleaderboard" class="display" style="width: 50%">
       <thead>
         <tr>
           <th>Team Name</th>
@@ -28,10 +28,9 @@ import $ from "jquery";
 
 export default {
   mounted() {
-    $("#leaderboard").DataTable({
-      paging: false,
-      searching: false,
-      info: false,
+    $("#finalleaderboard").DataTable({
+      // ajax: "https://dm-ai-evaluation.westeurope.cloudapp.azure.com/score/all",
+      ajax: "http://localhost:4242/score/finalall",
       paging: true,
       searching: true,
       info: true,
@@ -69,6 +68,7 @@ export default {
 .submission-form {
   height: 1000px;
   width: 70%;
+  background-color: rgb(167, 167, 167);
   box-shadow: 15px 15px 10px #888;
   margin: auto;
   border-radius: 1%;
@@ -82,7 +82,7 @@ table {
 }
 
 th {
-  color: white;
+  color: rgb(0, 0, 0);
   font-size: 20px;
 }
 </style>
