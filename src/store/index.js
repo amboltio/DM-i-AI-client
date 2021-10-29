@@ -18,7 +18,7 @@ export default createStore({
         attempts: -1,
         attempts_verifying: false,
         max_attempts_waldo: '2',
-        max_attempts_race_car: '-',
+        max_attempts_race_car: '10000',
         max_attempts_reviews: '3',
         max_attempts_iq_test: '1',
         evaluation_server_base_url: 'https://dm-ai-evaluation.westeurope.cloudapp.azure.com',
