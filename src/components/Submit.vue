@@ -33,7 +33,7 @@
       <p>Health check URL: <span>{{ full_health_url }} </span></p>
       <p>Health status: <span v-bind:style="{ color: verified_status_color}">{{ verified_status }}</span></p>
       <p>Submission URL: <span>{{ full_predict_url }}</span></p>
-      <p>Submission status: <span v-bind:style="{color: submitted_status_color}">{{ submitted_status }}</span></p>
+      <!-- <p>Submission status: <span v-bind:style="{color: submitted_status_color}">{{ submitted_status }}</span></p> -->
       <p>Score: <span v-bind:style="{color: grey}">{{ score_value }}</span></p>
     </div>
     <div v-if="show_health_check_button" class="submission-section">

@@ -4,10 +4,14 @@
       <thead>
         <tr>
           <th>Team Name</th>
-          <th>Where's Waldo?</th>
-          <th>Movie Reviews</th>
-          <th>Racing Game</th>
-          <th>IQ Test</th>
+          <th>Waldo Score</th>
+          <th>Waldo Ranked</th>
+          <th>Movie Scores</th>
+          <th>Movie Ranked</th>
+          <th>Race Scores</th>
+          <th>Race Ranked</th>
+          <th>IQ Score</th>
+          <th>IQ Ranked</th>
           <th>Total Score</th>
         </tr>
       </thead>
@@ -29,20 +33,24 @@ export default {
       paging: false,
       searching: false,
       info: false,
-      order: [[5, "desc"]],
+      order: [[9, "desc"]],
 
       columns: [
         { data: "group_name" },
         { data: "waldo_score" },
+        { data: "waldo_ranked" },
         { data: "movie_score" },
+        { data: "movie_ranked" },
         { data: "race_score" },
+        { data: "race_ranked" },
         { data: "iq_score" },
+        { data: "iq_ranked" },
         { data: "total_score" },
       ],
 
       columnDefs: [
         {
-          targets: [1, 2, 3, 4, 5],
+          targets: [1, 2, 3, 4, 5, 6, 7, 8, 9],
           className: "dt-body-center",
         },
       ],
