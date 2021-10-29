@@ -29,11 +29,10 @@ import $ from "jquery";
 export default {
   mounted() {
     $("#finalleaderboard").DataTable({
-      // ajax: "https://dm-ai-evaluation.westeurope.cloudapp.azure.com/score/all",
-      ajax: "http://localhost:4242/score/finalall",
-      paging: true,
-      searching: true,
-      info: true,
+      ajax: "https://dm-ai-evaluation.westeurope.cloudapp.azure.com/score/finalall",
+      paging: false,
+      searching: false,
+      info: false,
       order: [[9, "desc"]],
 
       columns: [
@@ -68,7 +67,7 @@ export default {
 .submission-form {
   height: 1000px;
   width: 70%;
-  background-color: rgb(167, 167, 167);
+  background-color: rgb(65, 57, 57);
   box-shadow: 15px 15px 10px #888;
   margin: auto;
   border-radius: 1%;
@@ -82,7 +81,7 @@ table {
 }
 
 th {
-  color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
   font-size: 20px;
 }
 </style>
