@@ -91,7 +91,7 @@ export default createStore({
         async submit_validation({ state, commit, getters }) {
             try {
                 if (state.validating || state.submitting) {
-                    commit('add_response', 'Validation or submittion in process, please wait...')
+                    commit('add_response', 'Validation or submission in process, please wait...')
                     return
                 }
                 state.validating = true
@@ -125,14 +125,14 @@ export default createStore({
             }
             catch (error) {
                 commit('reset_validation_state')
-                commit('add_response', 'Valudation submittion failed.')
+                commit('add_response', 'Valudation submission failed.')
                 state.validating = false
             }
         },
         async submit_evaluation({ state, commit, getters, dispatch }) {
             try {
                 if (state.validating || state.submitting) {
-                    commit('add_response', 'Validation or submittion in process, please wait...')
+                    commit('add_response', 'Validation or submission in process, please wait...')
                     return
                 }
                 state.submitting = true

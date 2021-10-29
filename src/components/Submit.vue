@@ -40,7 +40,7 @@
       <p>4. Check the health endpoint of your service or try to submit against our validation dataset</p>
       <p>You can check your model's performance as many times as you want by clicking the 'Test submission' button, however you can only use the actual 'Submit' button once.</p>
       <button class="action-btn" @click="verify_health_url" v-bind:style="{backgroundColor: verified_status_color}" >Health Check</button>
-      <button class="action-btn" @click="validate" v-bind:style="{backgroundColor: validation_status_color}" >Test submittion</button>
+      <button class="action-btn" @click="validate" v-bind:style="{backgroundColor: validation_status_color}" >Test submission</button>
     </div>
     <div v-if="show_submit_button" class="submission-section">
       <p>5. Submit</p>
@@ -353,10 +353,6 @@ export default {
     margin-top: 10px;
     margin-bottom: 10px;
   }
-  /* .submittion-section-task{
-    text-align: left;
-    margin-left: 50px;
-  } */
   .submission-info{
     text-align: left;
     margin-left: 20px;
