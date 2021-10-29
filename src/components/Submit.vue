@@ -29,21 +29,31 @@
     <div class="submission-section submission-info">
       <p>Usecase: <span v-bind:style="{ color: usecase_status_color}">{{ usecase_name }}</span></p>
       <p>Group status: <span v-bind:style="{ color: group_verified_status_color}">{{ group_verified_status }}</span></p>
+      <p>Group name: <span v-bind:style="{ color: group_name_color}">{{ group_name }}</span></p>
       <p>Attempts: <span v-bind:style="{color: attempts_status_color}">{{ attempts_value }}</span></p>
       <p>Health check URL: <span>{{ full_health_url }} </span></p>
       <p>Health status: <span v-bind:style="{ color: verified_status_color}">{{ verified_status }}</span></p>
       <p>Submission URL: <span>{{ full_predict_url }}</span></p>
-      <!-- <p>Submission status: <span v-bind:style="{color: submitted_status_color}">{{ submitted_status }}</span></p> -->
       <p>Score: <span v-bind:style="{color: grey}">{{ score_value }}</span></p>
     </div>
     <div v-if="show_health_check_button" class="submission-section">
       <p>4. Check the health endpoint of your service or try to submit against our validation dataset</p>
+      <p>You can check your model's performance as many times as you want by clicking the 'Test submission' button, however you can only use the actual 'Submit' button once.</p>
       <button class="action-btn" @click="verify_health_url" v-bind:style="{backgroundColor: verified_status_color}" >Health Check</button>
-      <button class="action-btn" @click="validate" v-bind:style="{backgroundColor: validation_status_color}" >Test submittion</button>
+      <button class="action-btn" @click="validate" v-bind:style="{backgroundColor: validation_status_color}" >Test submission</button>
     </div>
     <div v-if="show_submit_button" class="submission-section">
       <p>5. Submit</p>
-      <button @click="submit_evaluation" class="action-btn">Submit</button>
+      <button @click="alert_submit_evaluation" class="action-btn">Submit</button>
+    </div>
+    <div v-if="alert_value" class="submission-section">
+      <p v-bind:style="{backgroundColor: red, color: white, marginTop: '20px', paddingTop: '10px', paddingBottom: '10px' }">
+        !!! You can only perform this submission once in this competition !!!
+        <br/>
+        You can check your model's performance as many times as you want by clicking the 'Test submission' button, however you can only use the actual 'Submit' button once.
+      </p>
+      <button @click="submit_evaluation" class="usecase-btn" v-bind:style="{backgroundColor: green}">YES</button>
+      <button @click="reset_evaluation" class="usecase-btn" v-bind:style="{backgroundColor: red}">No</button>
     </div>
     <div class="submission-section submission-info">
       <textarea class="response-text-area" v-model="response_messages" rows="10" cols="50"></textarea>
@@ -116,6 +126,22 @@ export default {
       },
       set: function(value) {
         this.$store.commit('set_group', value)
+      }
+    },
+    group_name: {
+      get: function() {
+        return this.$store.state.group_name
+      }
+    },
+    group_name_color: {
+      get: function() {
+        if (this.$store.state.group_name === 'Not set') return this.red
+        else return this.green
+      }
+    },
+    alert_value: {
+      get: function() {
+        return this.$store.state.alert
       }
     },
     attempts_value: {
@@ -236,6 +262,7 @@ export default {
     },
     verify_group() {
       this.$store.dispatch('verify_group')
+      this.$store.dispatch('get_group_name')
       this.$store.dispatch('get_attempts')
     },
     get_usecase_color(usecase_id) {
@@ -247,8 +274,15 @@ export default {
       this.usecase_name = usecase_id
       this.$store.dispatch('get_attempts')
     },
+    alert_submit_evaluation() {
+      this.$store.state.alert = true
+    },
     submit_evaluation() {
       this.$store.dispatch('submit_evaluation')
+      this.$store.state.alert = false
+    },
+    reset_evaluation() {
+      this.$store.state.alert = false
     },
     validate() {
       this.$store.dispatch('submit_validation')
@@ -268,12 +302,13 @@ export default {
   #input-uuid{ width: 75% }
 
   .submission-form{
-    height: 1150px;
+    height: 1400px;
     width: 900px;
     background-color: rgb(65, 57, 57);
     box-shadow: 15px 15px 10px #888;
     margin: auto;
     border-radius: 1%;
+    margin-bottom: 300px;
   }
   .submission-title{
     font-size: 30px;
@@ -318,10 +353,6 @@ export default {
     margin-top: 10px;
     margin-bottom: 10px;
   }
-  /* .submittion-section-task{
-    text-align: left;
-    margin-left: 50px;
-  } */
   .submission-info{
     text-align: left;
     margin-left: 20px;

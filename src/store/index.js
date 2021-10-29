@@ -17,12 +17,14 @@ export default createStore({
         response_messages: [],
         attempts: -1,
         attempts_verifying: false,
-        max_attempts_waldo: '2',
-        max_attempts_race_car: '10000',
-        max_attempts_reviews: '3',
+        max_attempts_waldo: '1',
+        max_attempts_race_car: '1',
+        max_attempts_reviews: '1',
         max_attempts_iq_test: '1',
         evaluation_server_base_url: 'https://dm-ai-evaluation.westeurope.cloudapp.azure.com',
-        score: '-'
+        score: '-',
+        group_name: 'Not set',
+        alert: false
     },
     mutations: {
         reset_validation_state(state) {
@@ -65,10 +67,31 @@ export default createStore({
         }
     },
     actions: {
+        async get_group_name({ state, commit }) {
+            try {
+                const url = `https://dm-ai-evaluation.westeurope.cloudapp.azure.com/group/name?group_id=${state.group}`
+                fetch(url, {
+                    method: 'GET'
+                }).then(response => {
+                    if (response.status == 200) return response.json()
+                    else throw 'Cannot get group name'
+                }).then(data => {
+                    console.log(data)
+                    const group_name = data["data"]["group_name"]
+                    console.log(group_name)
+                    state.group_name = group_name
+                }).catch(error => {
+                    console.log(error)
+                    state.group_name = 'Not set'
+                })
+            } catch (error) {
+                commit('add_response', 'Failed to load group name.')
+            }
+        },
         async submit_validation({ state, commit, getters }) {
             try {
                 if (state.validating || state.submitting) {
-                    commit('add_response', 'Validation or submittion in process, please wait...')
+                    commit('add_response', 'Validation or submission in process, please wait...')
                     return
                 }
                 state.validating = true
@@ -102,14 +125,14 @@ export default createStore({
             }
             catch (error) {
                 commit('reset_validation_state')
-                commit('add_response', 'Valudation submittion failed.')
+                commit('add_response', 'Valudation submission failed.')
                 state.validating = false
             }
         },
         async submit_evaluation({ state, commit, getters, dispatch }) {
             try {
                 if (state.validating || state.submitting) {
-                    commit('add_response', 'Validation or submittion in process, please wait...')
+                    commit('add_response', 'Validation or submission in process, please wait...')
                     return
                 }
                 state.submitting = true
