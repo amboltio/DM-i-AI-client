@@ -1,6 +1,7 @@
 <template>
   <div id="nav">
     <router-link to="/leaderboard">Leaderboard</router-link> |
+    <router-link to="/finalleaderboard">Final leaderboard</router-link> |
     <router-link to="/submit">Evaluate your service</router-link>
   </div>
   <router-view/>
