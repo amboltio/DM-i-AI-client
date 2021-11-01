@@ -320,9 +320,17 @@ export default {
     padding-top: 10px;
     padding-bottom: 10px;
   }
-  .usecase-btn{
+  /* .usecase-btn{
     height:30px;
     width: 120px;
+    margin: 0 10px;
+    border-radius: 15px;
+    border: none;
+    background-color: white;
+  } */
+  .usecase-btn{
+    height:30px;
+    width: 10em;
     margin: 0 10px;
     border-radius: 15px;
     border: none;
