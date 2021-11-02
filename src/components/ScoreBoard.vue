@@ -65,19 +65,30 @@ export default {
 @import "https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css";
 
 .submission-form {
-  height: 1000px;
+  /* height: 100%;
+  width: 100%;
+  background-color: green; */
+  /* height: auto;
   width: 70%;
-  background-color: rgb(65, 57, 57);
-  box-shadow: 15px 15px 10px #888;
+  
+  
   margin: auto;
   border-radius: 1%;
   padding: 20px;
+  padding-bottom: 100px; */
 }
 
 table {
   width: 90% !important;
   margin-top: 20px;
   padding-top: 20px;
+  border: 1px solid rgb(65, 57, 57);
+  background-color: rgb(65, 57, 57);
+  box-shadow: 15px 15px 10px #888;
+}
+
+tr, td {
+    background-color: rgb(65, 57, 57);
 }
 
 th {
