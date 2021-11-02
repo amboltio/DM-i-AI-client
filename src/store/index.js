@@ -317,8 +317,10 @@ export default createStore({
             return state.protocol === 'http' || state.protocol === 'https'
         },
         is_host_valid: state => {
-            const regex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
-            return regex.test(state.host)
+            // Follows RFC 1123, see https://www.rfc-editor.org/rfc/rfc1123
+            const ip = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/
+            const domain = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$/
+            return ip.test(state.host) || domain.test(state.host)
         },
         is_port_valid: state => {
             return state.port !== undefined && state.port !== '' && !isNaN(state.port) && state.port >= 0 && state.port <= 65535
