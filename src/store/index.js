@@ -321,7 +321,7 @@ export default createStore({
             return regex.test(state.host)
         },
         is_port_valid: state => {
-            return !isNaN(state.port) && state.port >= 0 && state.port <= 65535 && String(state.port).length === 4
+            return state.port !== undefined && state.port !== '' && !isNaN(state.port) && state.port >= 0 && state.port <= 65535
         },
         is_group_id_valid: state => {
             const regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i

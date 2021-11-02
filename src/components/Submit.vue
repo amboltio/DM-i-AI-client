@@ -322,7 +322,7 @@ export default {
   }
   /* .usecase-btn{
     height:30px;
-    width: 120px;
+    width: 10em;
     margin: 0 10px;
     border-radius: 15px;
     border: none;
