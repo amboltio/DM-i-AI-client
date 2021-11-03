@@ -11,7 +11,7 @@
           <th>Race Scores</th>
           <th>Race Ranked</th>
           <th>IQ Score</th>
-          <th>IQ Ranked</th>
+          <!-- <th>IQ Ranked</th> -->
           <th>Total Score</th>
         </tr>
       </thead>
@@ -33,7 +33,7 @@ export default {
       paging: false,
       searching: false,
       info: false,
-      order: [[9, "desc"]],
+      order: [[8, "desc"]],
 
       columns: [
         { data: "group_name" },
@@ -44,13 +44,13 @@ export default {
         { data: "race_score" },
         { data: "race_ranked" },
         { data: "iq_score" },
-        { data: "iq_ranked" },
+        // { data: "iq_ranked" },
         { data: "total_score" },
       ],
 
       columnDefs: [
         {
-          targets: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+          targets: [1, 2, 3, 4, 5, 6, 7, 8],
           className: "dt-body-center",
         },
       ],
@@ -73,8 +73,9 @@ table {
   box-shadow: 15px 15px 10px #888;
 }
 
-tr, td {
-    background-color: rgb(65, 57, 57);
+tr,
+td {
+  background-color: rgb(65, 57, 57);
 }
 
 th {
