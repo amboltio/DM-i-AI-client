@@ -22,6 +22,8 @@ export default createStore({
         max_attempts_reviews: '1',
         max_attempts_iq_test: '1',
         evaluation_server_base_url: 'https://dm-ai-evaluation.westeurope.cloudapp.azure.com',
+        // evaluation_server_base_url: 'http://localhost:4242',
+
         score: '-',
         group_name: 'Not set',
         alert: false
@@ -69,7 +71,7 @@ export default createStore({
     actions: {
         async get_group_name({ state, commit }) {
             try {
-                const url = `https://dm-ai-evaluation.westeurope.cloudapp.azure.com/group/name?group_id=${state.group}`
+                const url = `${state.evaluation_server_base_url}/group/name?group_id=${state.group}`
                 fetch(url, {
                     method: 'GET'
                 }).then(response => {
@@ -107,6 +109,7 @@ export default createStore({
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
+                    timeout: getters.validation_timeout,
                     body: JSON.stringify(payload)
                 }).then(response => {
                     if (response.status == 200) return response.json()
@@ -271,6 +274,13 @@ export default createStore({
         },
         raw_url: state => {
             return `${state.protocol}://${state.host}:${state.port}`
+        },
+        validation_timeout: state => {
+            if (state.usecase === 0) return (10 * 10 + 10) * 1000 // 10s per image * 10 images + 10 seconds buffer
+            if (state.usecase === 1) return (60 * 5) * 1000 // 5 minutes
+            if (state.usecase === 2) return (30 + 10) * 1000 // 30 seconds + 10 seconds buffer
+            if (state.usecase === 3) return (30 + 10) * 1000 // 30 seconds + 10 seconds buffer
+            return 30 * 1000 // default 30 seconds
         },
         attempts_url: state => {
             if (state.usecase === 0) return `${state.evaluation_server_base_url}/wheres-waldo?group_id=${state.group}`
