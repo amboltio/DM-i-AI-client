@@ -1,4 +1,5 @@
 import { createStore } from "vuex";
+import { Timeout } from "./timeout";
 
 export default createStore({
     state: {
@@ -109,7 +110,7 @@ export default createStore({
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
-                    timeout: getters.validation_timeout,
+                    signal: Timeout(getters.validation_timeout).signal,
                     body: JSON.stringify(payload)
                 }).then(response => {
                     if (response.status == 200) return response.json()
